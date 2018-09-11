@@ -1,0 +1,51 @@
+---
+
+- name: export ssh-key to access vms
+  copy:
+    src: "{{item}}"
+    dest: /root/.ssh/{{item}}
+    mode: 0400
+  loop:
+    - vm-key.private
+    - vm-key.pub
+
+
+- name: set pubkey
+  set_fact:
+    vm_pubkey: "{{lookup('file', 'files/vm-key.pub')}}"
+
+
+- include_tasks: "create-vm.yml"
+  loop: "{{vms}}"
+  loop_control:
+    label: "{{ vm.name }}"
+    loop_var: vm
+
+- name: set ips
+  set_fact:
+    vm_ips: {}
+  tags:
+    - list
+
+- include_tasks: "get-vm.yml"
+  loop: "{{ vms }}"
+  loop_control:
+    label: "{{ vm.name }}"
+    loop_var: vm
+  tags:
+    - list
+
+- name: Wait for SSH to come up.
+  wait_for:
+    host: "{{vm_ips[vm.name]}}"
+    port: 22
+    delay: 5
+    timeout: 60
+    state: started
+  retries: 10
+  loop: "{{ vms }}"
+  loop_control:
+    label: "{{ vm.name }}"
+    loop_var: vm
+  tags:
+    - list

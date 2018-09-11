@@ -1,0 +1,14 @@
+---
+
+# - hosts: kvm
+#   gather_facts: false
+#   vars:
+#     ansible_ssh_pipelining: false
+#   roles:
+#     - { role: bootstrap-os, tags: bootstrap-os}
+
+- hosts: kvm
+  roles:
+    - {role: "kvm-install", tags: install}
+    - {role: "kvm-images", tags: images}
+    - {role: "kvm-start", tags: start}

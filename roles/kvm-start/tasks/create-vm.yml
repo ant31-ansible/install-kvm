@@ -1,0 +1,37 @@
+- name: set vm-name directory
+  set_fact:
+    vm_image: "{{images[vm.image_name]}}"
+    vm_dir: "{{vms_dir}}/{{vm.name}}"
+    vm_base_image_path: "{{images_dir}}/{{images[vm.image_name].filename}}.qcow2"
+
+- name: set images path vars
+  set_fact:
+    vm_config_image_path: "{{vm_dir}}/cloud-init.yml"
+    vm_image_path: "{{vm_dir}}/{{vm.name}}-{{vm.image_name}}.img"
+
+
+- name: create vm image directory
+  file:
+    state: directory
+    path: "{{vm_dir}}"
+
+- name: export cloud-init
+  template:
+    src: cloud-init.yml.j2
+    dest: "{{vm_dir}}/cloud-init.yml"
+
+- name: create image from cloud-init config
+  command: cloud-localds "{{vm_dir}}/cloud-init.img" {{vm_config_image_path}}
+
+- name: duplicate image
+  command: qemu-img create -f qcow2 -b {{vm_base_image_path}} {{vm_image_path}}
+
+- name: start vm
+  command: >
+    virt-install --connect=qemu:///system
+    --name {{vm.name}} --memory 2048  --vcpus=1
+    --os-type={{vm_image.os.type}}  --os-variant={{vm_image.os.variant}}
+    --disk {{vm_image_path}},device=disk,bus=virtio
+    --disk {{vm_config_image_path}},device=cdrom
+    --graphics none
+    --import --noautoconsole

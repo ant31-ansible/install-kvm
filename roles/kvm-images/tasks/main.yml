@@ -1,0 +1,28 @@
+---
+
+- name: create image directory
+  file:
+    state: directory
+    path: "{{images_dir}}"
+
+- name: download images
+  get_url:
+    url: "{{item.value.url}}"
+    dest: "{{images_dir}}/{{item.value.filename}}"
+    checksum: "{{item.value.checksum}}"
+  with_dict: "{{images}}"
+  when:
+    - skip_download is not defined or skip_download|bool != true
+
+- name: convert images
+  command: qemu-img convert -O qcow2 {{images_dir}}/{{item.value.filename}} {{images_dir}}/{{item.value.filename}}.qcow2
+  with_dict: "{{images}}"
+  when:
+    - skip_download is not defined or skip_download|bool != true
+    - item.value.converted|bool != true
+
+- name: resize images
+  command: qemu-img resize {{images_dir}}/{{item.value.filename}}.qcow2 +8G
+  with_dict: "{{images}}"
+  when:
+    - skip_download is not defined or skip_download|bool != true

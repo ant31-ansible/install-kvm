@@ -1,0 +1,14 @@
+#cloud-config
+users:
+  - name: ant31
+    ssh_pwauth: true
+    password: toto
+    ssh_authorized_keys:
+    - {{vm_pubkey}}
+
+  - name: root
+    ssh_pwauth: "true"
+    password: ubuntu
+    ssh_authorized_keys:
+      - {{vm_pubkey}}
+

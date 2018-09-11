@@ -1,0 +1,27 @@
+---
+
+- name: install packages
+  apt:
+    name: "{{packages}}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - qemu-kvm
+      - libvirt-clients
+      - libvirt-daemon-system
+      - bridge-utils
+      - virt-manager
+      - cloud-image-utils
+
+- name: add root as libvirt
+  command: adduser root {{item}}
+  loop:
+    - libvirt
+    - libvirt-qemu
+
+- name: start libvirtd
+  service:
+    name: libvirtd
+    state: started
+    enabled: yes
