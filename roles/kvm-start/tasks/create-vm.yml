@@ -6,25 +6,54 @@
 
 - name: set images path vars
   set_fact:
-    vm_config_image_path: "{{vm_dir}}/cloud-init.yml"
+    vm_config_image_path: "{{vm_dir}}/cloud-init.img"
     vm_image_path: "{{vm_dir}}/{{vm.name}}-{{vm.image_name}}.img"
-
 
 - name: create vm image directory
   file:
     state: directory
     path: "{{vm_dir}}"
 
+- name: search vm image
+  stat:
+    path: "{{vm_image_path}}"
+  register: vm_file
+
 - name: export cloud-init
   template:
     src: cloud-init.yml.j2
     dest: "{{vm_dir}}/cloud-init.yml"
+  register: config_file
 
 - name: create image from cloud-init config
-  command: cloud-localds "{{vm_dir}}/cloud-init.img" {{vm_config_image_path}}
+  command: cloud-localds {{vm_config_image_path}} "{{vm_dir}}/cloud-init.yml"
+  when: config_file is changed
+
 
 - name: duplicate image
   command: qemu-img create -f qcow2 -b {{vm_base_image_path}} {{vm_image_path}}
+  when: vm_file.stat.exists == False
+
+- name: check VM status
+  virt:
+    command: status
+    name: "{{vm.name}}"
+  register: vmstatus
+  ignore_errors: true
+
+- name: show status
+  debug:
+    msg: "{{vmstatus}}"
+
+- name: echo command
+  shell: >
+    echo "virt-install --connect=qemu:///system
+    --name {{vm.name}} --memory 2048  --vcpus=1
+    --os-type={{vm_image.os.type}}  --os-variant={{vm_image.os.variant}}
+    --disk {{vm_image_path}},device=disk,bus=virtio
+    --disk {{vm_config_image_path}},device=cdrom
+    --graphics none
+    --import --noautoconsole" > {{vm_dir}}/virt-install.sh
 
 - name: start vm
   command: >
@@ -35,3 +64,5 @@
     --disk {{vm_config_image_path}},device=cdrom
     --graphics none
     --import --noautoconsole
+  when:
+    - vmstatus is failed or vmstatus.status != "running"

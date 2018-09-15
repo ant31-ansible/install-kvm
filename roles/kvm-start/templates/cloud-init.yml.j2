@@ -1,4 +1,5 @@
 #cloud-config
+
 users:
   - name: ant31
     ssh_pwauth: true
@@ -7,8 +8,7 @@ users:
     - {{vm_pubkey}}
 
   - name: root
-    ssh_pwauth: "true"
+    ssh_pwauth: true
     password: ubuntu
     ssh_authorized_keys:
       - {{vm_pubkey}}
-
