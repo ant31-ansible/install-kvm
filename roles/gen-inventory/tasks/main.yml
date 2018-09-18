@@ -1,10 +1,10 @@
 ---
 - name: create inventory
   file:
-    path: "{{inventory_dir}}"
+    path: "{{inventory_file|dirname}}"
     state: directory
 
 - name: gen-inventory
   template:
     src: inventory.ini.j2
-    dest: "{{inventory_dir}}/inventory.yml"
+    dest: "{{inventory_file}}"

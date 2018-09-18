@@ -2,5 +2,4 @@
 dependencies:
   - role: kvm-start
   - role: gen-inventory
-    inventory_dir: /tmp/{{build_id}}
     gen_inventory_ips: "{{vm_ips}}"

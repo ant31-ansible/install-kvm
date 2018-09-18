@@ -1,4 +1,4 @@
-inventory_dir: /tmp
+inventory_file: /tmp/inventory.yml
 gen_inventory:
   all:
 

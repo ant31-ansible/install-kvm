@@ -1,13 +1,6 @@
 - name: set vm-name directories
   set_fact:
-    vm_image: "{{images[vm.image_name]}}"
     vm_dir: "{{vms_dir}}/{{vm.name}}"
-    vm_base_image_path: "{{images_dir}}/{{images[vm.image_name].filename}}.qcow2"
-
-- name: set images path vars
-  set_fact:
-    vm_config_image_path: "{{vm_dir}}/cloud-init.yml"
-    vm_image_path: "{{vm_dir}}/{{vm.name}}-{{vm.image_name}}.img"
 
 - name: stop/destroy vm
   virt:
