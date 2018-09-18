@@ -1,0 +1,62 @@
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: memory-1024
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/memory: "1024"
+  domain:
+    clock:
+      utc: {}
+    resources:
+      requests:
+        memory: 1024M
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: memory-512
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/memory: "512"
+  domain:
+    clock:
+      utc: {}
+    resources:
+      requests:
+        memory: 512M
+
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: memory-2048
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/memory: "2048"
+  domain:
+    clock:
+      utc: {}
+    resources:
+      requests:
+        memory: 2048M
+
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: memory-4096
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/memory: "4096"
+  domain:
+    clock:
+      utc: {}
+    resources:
+      requests:
+        memory: 4096M

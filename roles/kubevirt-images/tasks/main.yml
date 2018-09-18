@@ -1,0 +1,27 @@
+---
+- name: copy Dockerfile
+  template:
+    src: Dockerfile
+    dest: "{{images_dir}}/Dockerfile"
+
+- name: create docker image
+  command: docker build -t {{registry}}/vm-{{item.key}} --build-arg cloud_image="{{item.value.filename}}.qcow2" {{images_dir}}
+  # docker_image:
+  #   buildargs:
+  #     cloud_image: "{{image_path}}"
+  #   path: "{{images_dir}}"
+  #   name: "quay.io/kubespray/vm-{{item.key}}"
+  with_dict: "{{images}}"
+  tags:
+    - docker
+
+- name: docker login
+  command: docker login -u="{{docker_user}}" -p="{{docker_password}}" "{{docker_host}}"
+  tags:
+    - docker
+
+- name: docker push image
+  command: docker push {{registry}}/vm-{{item.key}}:latest
+  with_dict: "{{images}}"
+  tags:
+    - docker

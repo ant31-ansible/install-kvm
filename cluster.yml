@@ -14,19 +14,26 @@
 #     - {role: "kvm-images", tags: images}
 
 
-- hosts: kvm
+# - hosts: kvm
+#   roles:
+#     - role: kubevirt-images
+#       tags:
+#         - kubevirt-image
+
+#     - role: "kvm-destroy"
+#       tags:
+#         - destroy
+#       when:
+#         - destroy is defined
+#         - destroy|bool == True
+
+#     - role: "kubespray-ci"
+#       tags:
+#         - deploy
+
+- hosts: kvm[0]
   roles:
-    - role: "kvm-destroy"
-      tags:
-        - destroy
-      when:
-        - destroy is defined
-        - destroy|bool == True
-
-    - role: "kubespray-ci"
-      tags:
-        - deploy
-
+    - role: kubevirt-start
 
     # - {role: "kvm-images", tags: images}
     # - {role: "kvm-start", tags: start}

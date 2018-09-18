@@ -1,0 +1,38 @@
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: 1-cpu-cores
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/cpu-cores: "1"
+  domain:
+    cpu:
+      cores: 1
+
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: 2-cpu-cores
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/cpu-cores: "2"
+  domain:
+    cpu:
+      cores: 2
+
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: 4-cpu-cores
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/cpu-cores: "4"
+  domain:
+    cpu:
+      cores: 4

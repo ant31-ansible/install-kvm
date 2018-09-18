@@ -20,9 +20,3 @@
   when:
     - skip_download is not defined or skip_download|bool != true
     - item.value.converted|bool != true
-
-- name: resize images
-  command: qemu-img resize {{images_dir}}/{{item.value.filename}}.qcow2 +8G
-  with_dict: "{{images}}"
-  when:
-    - skip_download is not defined or skip_download|bool != true

@@ -1,0 +1,23 @@
+{% for key,value in images.items() %}
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: image-{{key}}
+spec:
+  selector:
+    matchLabels:
+      kubespray.io/image: {{key}}
+  domain:
+    devices:
+      disks:
+        - name: registrydisk
+          volumeName: registryvolume
+          disk:
+            bus: virtio
+  volumes:
+    - name: registryvolume
+      registryDisk:
+        image: {{registry}}/vm-{{key}}:latest
+
+{% endfor %}

@@ -1,0 +1,25 @@
+---
+
+- name: list-vm macaddress
+  shell: "virsh dumpxml {{vm.name}} |grep 'mac address' |  awk -F\\' '{ print $2}'"
+  register: mac_address
+  tags:
+    - list
+
+- name: list-vm ips
+  shell: "arp -an | grep {{mac_address.stdout}}| sed -r 's/. \\((.*)\\).*/\\1/'"
+  register: ip
+  until: ip.stdout != ""
+  retries: 10
+  delay: 5
+  tags:
+    - list
+
+- name: set ip fact
+  set_fact:
+    vm_ips: |
+      {%- set _d = vm_ips.update({vm.name: ip.stdout}) -%}
+      {{ vm_ips }}
+
+  tags:
+    - list

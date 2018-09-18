@@ -1,0 +1,24 @@
+---
+- name: create-preset directory
+  file:
+    state: directory
+    path: "{{kubevirt_dir|default('/opt/kubevirt')}}/presets"
+
+- name: expand presets templates
+  template:
+    src: "{{item}}"
+    dest: "{{kubevirt_dir|default('/opt/kubevirt')}}/presets/{{item}}"
+  loop:
+    - kubevirt-cpu-presets.yaml
+    - kubevirt-gpu-presets.yaml
+    - kubevirt-memory-presets.yaml
+    - kubevirt-image-presets.yaml
+
+
+- name: kubectl apply presets
+  command: kubectl apply -f "{{kubevirt_dir|default('/opt/kubevirt')}}/presets/{{item}}"
+  loop:
+    - kubevirt-cpu-presets.yaml
+    - kubevirt-gpu-presets.yaml
+    - kubevirt-memory-presets.yaml
+    - kubevirt-image-presets.yaml

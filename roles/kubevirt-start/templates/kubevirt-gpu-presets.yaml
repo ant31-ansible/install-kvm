@@ -1,0 +1,24 @@
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: no-gpu
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/graphics: "false"
+  domain:
+    devices:
+      autoattachGraphicsDevice: false
+---
+apiVersion: kubevirt.io/v1alpha2
+kind: VirtualMachineInstancePreset
+metadata:
+  name: with-gpu
+spec:
+  selector:
+    matchLabels:
+      kubevirt.io/graphics: "true"
+  domain:
+    devices:
+      autoattachGraphicsDevice: false
