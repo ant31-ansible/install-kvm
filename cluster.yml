@@ -7,8 +7,28 @@
 #   roles:
 #     - { role: bootstrap-os, tags: bootstrap-os}
 
+# Prepare the hypervisors-host
+# - hosts: kvm
+#   roles:
+#     - {role: "kvm-install", tags: install}
+#     - {role: "kvm-images", tags: images}
+
+
 - hosts: kvm
   roles:
-    - {role: "kvm-install", tags: install}
-    - {role: "kvm-images", tags: images}
-    - {role: "kvm-start", tags: start}
+    - role: "kvm-destroy"
+      tags:
+        - destroy
+      when:
+        - destroy is defined
+        - destroy|bool == True
+
+    - role: "kubespray-ci"
+      tags:
+        - deploy
+
+
+    # - {role: "kvm-images", tags: images}
+    # - {role: "kvm-start", tags: start}
+    # - {role: "kvm-destroy", tags: destroy}
+    # - {role: "gen-inventory", tags: gen-inventory}

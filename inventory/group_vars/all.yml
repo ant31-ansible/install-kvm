@@ -1,17 +1,43 @@
 ---
 ansible_ssh_user: root
+gen_inventory_ips:
+
+
+gen_inventory:
+  all:
+    hosts:
+      k8s-1:
+        etcd_member_name: etcd-1
+      k8s-2:
+        etcd_member_name: etcd-2
+      k8s-3:
+        etcd_member_name: etcd-3
+    children:
+      kube-master:
+        hosts:
+          k8s-1:
+          k8s-2:
+      kube-node:
+        hosts:
+          k8s-3:
+      etcd:
+        hosts:
+          k8s-1:
+      k8s-cluster:
+        children:
+          kube-master:
+          kube-nodes:
+
 
 vms:
-  # - name: k8s-1
-  #   image_name: ubuntu-1604
-  #   ansible_groups:
-  #     -
-  #   ansible_vars: {}
+  - name: k8s-1
+    image_name: ubuntu-1604
+
   # - name: k8s-2
   #   image_name: ubuntu-1604
 
-  - name: k8s-3
-    image_name: ubuntu-1604
+  # - name: k8s-3
+  #   image_name: ubuntu-1604
 
 images:
     ubuntu-1604:
