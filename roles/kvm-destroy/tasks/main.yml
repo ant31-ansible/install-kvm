@@ -1,0 +1,7 @@
+---
+
+- include_tasks: "destroy-vm.yml"
+  loop: "{{vms}}"
+  loop_control:
+    label: "{{ vm.name }}"
+    loop_var: vm

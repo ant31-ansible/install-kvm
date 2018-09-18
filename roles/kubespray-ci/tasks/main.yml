@@ -1,0 +1,16 @@
+- name: Wait for SSH to come up.
+  wait_for:
+    host: "{{vm_ips[vm.name]}}"
+    port: 22
+    delay: 5
+    timeout: 60
+    state: started
+  retries: 10
+  loop: "{{ vms }}"
+  loop_control:
+    label: "{{ vm.name }}"
+    loop_var: vm
+
+- name: debug
+  debug:
+    msg: "{{gen_inventory_ips}}"

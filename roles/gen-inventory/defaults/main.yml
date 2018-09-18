@@ -1,0 +1,36 @@
+inventory_file: /tmp/inventory.yml
+gen_inventory:
+  all:
+
+gen_inventory_ips: {}
+
+# Example:
+# gen_inventory_ips:
+#   k8s-1: 10.0.0.2
+#   k8s-1: 10.0.0.5
+#   k8s-1: 10.0.0.3
+
+# gen_inventory:
+#   all:
+#     hosts:
+#       k8s-1:
+#         etcd_member_name: etcd-1
+#       k8s-2:
+#         etcd_member_name: etcd-2
+#       k8s-3:
+#         etcd_member_name: etcd-3
+#     children:
+#       kube-master:
+#         hosts:
+#           k8s-1:
+#           k8s-2:
+#       kube-node:
+#         hosts:
+#           k8s-3:
+#       etcd:
+#         hosts:
+#           k8s-1:
+#       k8s-cluster:
+#         children:
+#           kube-master:
+#           kube-nodes:
