@@ -1,5 +1,5 @@
----
-dependencies:
-  - role: kvm-start
-  - role: gen-inventory
-    gen_inventory_ips: "{{vm_ips}}"
+# ---
+# dependencies:
+#   - role: kvm-start
+#   - role: gen-inventory
+#     gen_inventory_ips: "{{vm_ips}}"

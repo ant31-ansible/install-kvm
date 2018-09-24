@@ -1,16 +1,61 @@
-- name: Wait for SSH to come up.
-  wait_for:
-    host: "{{vm_ips[vm.name]}}"
-    port: 22
-    delay: 5
-    timeout: 60
-    state: started
-  retries: 10
-  loop: "{{ vms }}"
-  loop_control:
-    label: "{{ vm.name }}"
-    loop_var: vm
+- name: export ssh-key to access vms
+  copy:
+    src: "{{item}}"
+    dest: /root/.ssh/{{item}}
+    mode: 0400
+  loop:
+    - vm-key.private
+    - vm-key.pub
+
+- name: set pubkey
+  set_fact:
+    vm_pubkey: "{{lookup('file', 'files/vm-key.pub')}}"
+
+- name: create-replicas directory
+  file:
+    state: directory
+    path: "{{vmreplicas_dir}}"
+
+- name: Replica template
+  template:
+    src: kubevirt-replicas.yml
+    dest: "{{vmreplicas_dir}}/{{test_name}}-vms.yml"
+
+# - name: apply vm
+#   command: kubectl apply -f
+
+- name: get_ips
+  shell: "kubectl get pods -l guest=k8s-{{test_name}} -o json | jq -r '[.items[] | {\"name\": (.metadata.name), \"ip\": .status.podIP}]'"
+  register: vmips
+
+- name: parse ips
+  set_fact:
+    gen_inventory_ips: "{{vmips.stdout|from_json}}"
+
+- name: create inventory
+  file:
+    path: "{{inventory_file|dirname}}"
+    state: directory
 
 - name: debug
   debug:
     msg: "{{gen_inventory_ips}}"
+
+- name: gen-inventory
+  template:
+    src: inventory.yml.j2
+    dest: "{{inventory_file}}"
+
+
+# - name: Wait for SSH to come up.
+#   wait_for:
+#     host: "{{vm_ips[vm.name]}}"
+#     port: 22
+#     delay: 5
+#     timeout: 60
+#     state: started
+#   retries: 10
+#   loop: "{{ vms }}"
+#   loop_control:
+#     label: "{{ vm.name }}"
+#     loop_var: vm

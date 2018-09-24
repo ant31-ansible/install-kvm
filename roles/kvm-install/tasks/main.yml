@@ -13,6 +13,7 @@
       - bridge-utils
       - virt-manager
       - cloud-image-utils
+      - jq
 
 - name: add root as libvirt
   command: adduser root {{item}}
